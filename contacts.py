@@ -1,13 +1,12 @@
-contact = ''
-delimiter = '-' * 30
+DELIMITER = '-' * 30
 
 
 def add():
-    global contact
     print('\n----- Create new contact ----- ')
     contact = enter_contact_info()
     print(f'\nCongrats! Your new contact is:\n{contact}')
-    print(delimiter)
+    print(DELIMITER)
+    return contact
 
 
 def enter_contact_info():
@@ -23,28 +22,41 @@ def enter_contact_info():
             return name + ' ' + phone_number
 
 
-def search():
+def search(contact: str):
     print('\n----- Search contact ----- ')
 
     keep_searching = True
     while keep_searching:
-        search_substring = input('Start typing a name or a phone number: ')
-        search_substring.lower() \
-            .strip()
-
+        search_substring = input('Start typing a name or a phone number: ')\
+            .strip()\
+            .lower()
         prepared_contact = contact.lower()
-        is_exist = prepared_contact.startswith(search_substring)
+        contact_info = prepared_contact.split(' ')
+        is_present = search_by_name(contact_info[0], search_substring)
+        if not is_present:
+            is_present = search_by_number(contact_info[1], search_substring)
 
-        if is_exist:
-            print(contact)
-        else:
-            print("No results")
+        print(contact if is_present else 'No results')
 
         keep_searching = input(f"\nWanna find anything else? "
                                f"Type 'y' for yes or press any key for 'no' ") == 'y'
 
-    print(delimiter)
+    print(DELIMITER)
 
 
-add()
-search()
+def search_by_name(name, substring):
+    return name.startswith(substring)
+
+
+def search_by_number(num: str, substring):
+    result = num.find(substring)
+    return result != -1
+
+
+def manage_contacts():
+    contact = add()
+    search(contact)
+
+
+if __name__ == '__main__':
+    manage_contacts()
