@@ -1,11 +1,15 @@
-DELIMITER = '-' * 30
+DELIMITER = '\n' + '-' * 30
+contacts = ['abc 94587694576',
+            'znxcvnx 127352',
+            'abcrty 1234567']
 
 
 def add():
     print('\n----- Create new contact ----- ')
     contact = enter_contact_info()
-    print(f'\nCongrats! Your new contact is:\n{contact}')
-    print(DELIMITER)
+    contacts.append(contact)
+
+    print(f'\nCongrats! Your new contact is:\n{contact}{DELIMITER}')
     return contact
 
 
@@ -23,7 +27,7 @@ def enter_contact_info():
 
 
 def search(contact: str):
-    print('\n----- Search contact ----- ')
+    print('\n------- Search contact ------- ')
 
     keep_searching = True
     while keep_searching:
@@ -53,8 +57,15 @@ def search_by_number(num: str, substring):
     return result != -1
 
 
+def show_contacts():
+    print('\n-------- All contacts -------- ')
+    print(*contacts, sep='\n')
+    print(DELIMITER)
+
+
 def manage_contacts():
     contact = add()
+    show_contacts()
     search(contact)
 
 
