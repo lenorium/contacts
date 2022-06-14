@@ -1,3 +1,5 @@
+import re
+
 DELIMITER = '\n' + '-' * 30
 all_contacts = ['abc 94587694576',
                 'znxcvnx 127352',
@@ -51,10 +53,7 @@ def search():
     print('\n------- Search contact ------- ')
 
     search_substring = input('Start typing a name or a phone number: ')
-    result = []
-    for contact in all_contacts:
-        if matches(contact, search_substring):
-            result.append(contact)
+    result = list(filter(lambda contact: matches(contact, search_substring), all_contacts))
 
     if len(result) == 0:
         print('No results')
@@ -64,20 +63,10 @@ def search():
 
 
 def matches(contact: str, substring):
-    substring = substring.strip().lower()
-    contact = contact.lower()
+    substring = substring.strip()
     name, number = contact.split(' ')
-    return matches_by_name(name, substring) or \
-           matches_by_number(number, substring)
-
-
-def matches_by_name(name, substring):
-    return name.startswith(substring)
-
-
-def matches_by_number(num: str, substring):
-    result = num.find(substring)
-    return result != -1
+    return bool(re.match(substring, name, re.IGNORECASE)) or \
+           bool(re.search(substring, number))
 
 
 def show_contacts(contacts: list):
@@ -87,18 +76,14 @@ def show_contacts(contacts: list):
     print(DELIMITER)
 
 
-def ask_action():
-    return input("\nWanna do anything else? Type 'y' for yes or press any key for 'no' ").lower() == 'y'
-
-
 def manage_contacts():
     while True:
-        action = input("""Choose your action:\n\n
-                           Show contacts list (type l)\n
-                           Search contact (type s)\n
-                           Add new contact (type n)\n
-                           Delete contact (type d)\n
-                           Exit (type e)\n""").lower()
+        action = input('Choose your action:\n\n'
+                       'Show contacts list (type l)\n'
+                       'Search contact (type s)\n'
+                       'Add new contact (type n)\n'
+                       'Delete contact (type d)\n'
+                       'Exit (type e)\n').lower()
         match action:
             case 'l':
                 show_contacts(all_contacts)
@@ -113,8 +98,6 @@ def manage_contacts():
             case _:
                 print('Try again')
                 continue
-        if not ask_action():
-            break
 
 
 if __name__ == '__main__':
