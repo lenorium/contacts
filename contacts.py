@@ -56,14 +56,15 @@ def search():
         if matches(contact, search_substring):
             result.append(contact)
 
-    show_contacts(result) if len(result) != 0 else print('No results')
+    if len(result) == 0:
+        print('No results')
+    else:
+        show_contacts(result)
     print(DELIMITER)
 
 
 def matches(contact: str, substring):
-    substring = substring \
-        .strip() \
-        .lower()
+    substring = substring.strip().lower()
     contact = contact.lower()
     name, number = contact.split(' ')
     return matches_by_name(name, substring) or \
@@ -87,37 +88,33 @@ def show_contacts(contacts: list):
 
 
 def ask_action():
-    return input("\nWanna do anything else? "
-                 "Type 'y' for yes or press any key for 'no' ") == 'y'
+    return input("\nWanna do anything else? Type 'y' for yes or press any key for 'no' ").lower() == 'y'
 
 
 def manage_contacts():
-    choose_action = True
-    while choose_action:
-        action = input('Choose your action:\n\n'
-                       'Show contacts list (type l)\n'
-                       'Search contact (type s)\n'
-                       'Add new contact (type n)\n'
-                       'Delete contact (type d)\n'
-                       'Exit (type e)\n')
-
+    while True:
+        action = input("""Choose your action:\n\n
+                           Show contacts list (type l)\n
+                           Search contact (type s)\n
+                           Add new contact (type n)\n
+                           Delete contact (type d)\n
+                           Exit (type e)\n""").lower()
         match action:
             case 'l':
                 show_contacts(all_contacts)
-                choose_action = ask_action()
             case 's':
                 search()
-                choose_action = ask_action()
             case 'n':
                 add()
-                choose_action = ask_action()
             case 'd':
                 delete()
-                choose_action = ask_action()
             case 'e':
                 break
             case _:
                 print('Try again')
+                continue
+        if not ask_action():
+            break
 
 
 if __name__ == '__main__':
